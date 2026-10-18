@@ -47,3 +47,69 @@ function AudioManager.new(eventManager)
     return self
 
 end
+
+
+function AudioManager:registerEvents()
+
+    if not self.eventManager then return end
+
+    self.eventManager:on("player_damaged", function()
+
+        self:playSFX("damage_player")
+
+    end)
+
+
+    self.eventManager:on("player_died", function()
+
+        self:playSFX("death_player")
+        self:playMusic("lose")
+
+    end)
+
+
+    self.eventManager:on("enemy_damaged", function()
+
+        --- Selección aleatoria entre los 4 sonidos de daño a enemigos ---
+        local idx = math.random(1, 4)
+        self:playSFX("enemies_damage" .. idx)
+
+    end)
+
+
+    self.eventManager:on("enemy_died", function()
+
+        --- Selección aleatoria entre los 2 sonidos de muerte de enemigos ---
+        local idx = math.random(1, 2)
+        self:playSFX("death_enemies" .. idx)
+
+    end)
+
+
+    self.eventManager:on("collectible_picked", function()
+
+        self:playSFX("yes")
+
+    end)
+
+
+    self.eventManager:on("game_won", function()
+
+        self:playMusic("win")
+
+    end)
+
+end
+
+
+function AudioManager:playSFX(name)
+
+    if self.sfx[name] then
+
+        self.sfx[name]:stop()
+        self.sfx[name]:play()
+
+    end
+
+end
+
